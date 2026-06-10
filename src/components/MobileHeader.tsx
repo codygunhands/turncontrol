@@ -1,14 +1,23 @@
-import { Radio } from "lucide-react";
+import { TurnControlLogo } from "@/components/TurnControlLogo";
 
 export function MobileHeader() {
   return (
-    <header className="md:hidden flex items-center gap-3 border-b border-slate-700/50 bg-slate-950/90 px-4 py-3 shrink-0 no-print">
-      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-sky-600/20 ring-1 ring-sky-500/40">
-        <Radio className="h-3.5 w-3.5 text-sky-400" />
-      </div>
-      <div>
-        <p className="text-sm font-bold tracking-wide text-slate-100 leading-tight">TurnControl</p>
-        <p className="text-[10px] text-slate-500 leading-tight font-mono">BKK / VTBS · UTC+7</p>
+    <header
+      className="md:hidden flex items-center justify-between px-4 py-3 shrink-0 no-print"
+      style={{
+        background: "#061018",
+        borderBottom: "1px solid rgba(143, 161, 183, 0.1)",
+      }}
+    >
+      <TurnControlLogo size="sm" />
+      <div className="flex items-center gap-1.5">
+        <span
+          className="h-1.5 w-1.5 rounded-full"
+          style={{ background: "#22C55E" }}
+        />
+        <span className="font-mono text-[10px]" style={{ color: "#687289" }}>
+          BKK · UTC+7
+        </span>
       </div>
     </header>
   );

@@ -101,48 +101,64 @@ export function getStatusLabel(status: FlightStatus | TaskStatus): string {
   return labels[status] ?? status;
 }
 
+/* ── Brand semantic status colors (exact hex) ──────────────── */
+export const STATUS_COLORS = {
+  on_time:     "#22C55E",  // green-500
+  at_risk:     "#FBBF24",  // amber-400
+  delayed:     "#F97316",  // orange-500
+  critical:    "#EF4444",  // red-500
+  in_progress: "#3B82F6",  // blue-500
+  completed:   "#64748B",  // slate-500
+  not_started: "#687289",  // tc-neutral
+  blocked:     "#EF4444",  // red-500
+} as const;
+
+export function getStatusHex(status: string): string {
+  return STATUS_COLORS[status as keyof typeof STATUS_COLORS] ?? STATUS_COLORS.not_started;
+}
+
 export function getFlightStatusColor(status: FlightStatus): string {
   switch (status) {
-    case "on_time":   return "text-emerald-400";
+    case "on_time":   return "text-green-500";
     case "at_risk":   return "text-amber-400";
-    case "delayed":   return "text-orange-400";
-    case "critical":  return "text-red-400";
-    case "completed": return "text-slate-400";
+    case "delayed":   return "text-orange-500";
+    case "critical":  return "text-red-500";
+    case "completed": return "text-slate-500";
   }
 }
 
 export function getFlightStatusBg(status: FlightStatus): string {
   switch (status) {
-    case "on_time":   return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
-    case "at_risk":   return "bg-amber-500/10 text-amber-400 border-amber-500/30";
-    case "delayed":   return "bg-orange-500/10 text-orange-400 border-orange-500/30";
-    case "critical":  return "bg-red-500/10 text-red-400 border-red-500/30";
-    case "completed": return "bg-slate-700/30 text-slate-400 border-slate-600/30";
+    case "on_time":   return "bg-green-500/10 text-green-400 border-green-500/25";
+    case "at_risk":   return "bg-amber-400/10 text-amber-400 border-amber-400/25";
+    case "delayed":   return "bg-orange-500/10 text-orange-400 border-orange-500/25";
+    case "critical":  return "bg-red-500/10 text-red-400 border-red-500/25";
+    case "completed": return "bg-slate-500/10 text-slate-400 border-slate-500/25";
   }
 }
 
 export function getTaskStatusBg(status: TaskStatus): string {
   switch (status) {
-    case "completed":   return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
-    case "in_progress": return "bg-sky-500/10 text-sky-400 border-sky-500/30";
-    case "delayed":     return "bg-orange-500/10 text-orange-400 border-orange-500/30";
-    case "blocked":     return "bg-red-500/10 text-red-400 border-red-500/30";
-    case "not_started": return "bg-slate-700/20 text-slate-500 border-slate-600/30";
+    case "completed":   return "bg-green-500/10 text-green-400 border-green-500/25";
+    case "in_progress": return "bg-blue-500/10 text-blue-400 border-blue-500/25";
+    case "delayed":     return "bg-orange-500/10 text-orange-400 border-orange-500/25";
+    case "blocked":     return "bg-red-500/10 text-red-400 border-red-500/25";
+    case "not_started": return "bg-slate-700/20 text-slate-500 border-slate-600/25";
   }
 }
 
 export function getAlertSeverityBg(severity: string): string {
   switch (severity) {
-    case "critical": return "bg-red-500/10 text-red-400 border-red-500/30";
-    case "warning":  return "bg-amber-500/10 text-amber-400 border-amber-500/30";
-    case "info":     return "bg-sky-500/10 text-sky-400 border-sky-500/30";
+    case "critical": return "bg-red-500/10 text-red-400 border-red-500/25";
+    case "warning":  return "bg-amber-400/10 text-amber-400 border-amber-400/25";
+    case "info":     return "bg-blue-500/10 text-blue-400 border-blue-500/25";
     default:         return "bg-slate-700/20 text-slate-400 border-slate-600/20";
   }
 }
 
 export function getSectionProgressColor(pct: number): string {
-  if (pct >= 90) return "bg-emerald-500";
-  if (pct >= 60) return "bg-sky-500";
-  if (pct >= 30) return "bg-amber-500";
+  if (pct >= 90) return "bg-green-500";
+  if (pct >= 60) return "bg-blue-500";
+  if (pct >= 30) return "bg-amber-400";
   return "bg-red-500";
 }
