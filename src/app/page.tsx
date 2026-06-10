@@ -79,8 +79,95 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Flights table */}
-      <div className="rounded-lg border border-slate-700/50 bg-slate-900/60 overflow-x-auto scrollbar-thin">
+      {/* ── Mobile flight cards (< md) ─────────────────────────────── */}
+      <div className="flex flex-col gap-2 md:hidden">
+        {flights.map((flight) => {
+          const timeToStd   = getTimeToSTD(flight.std);
+          const isCompleted = flight.status === "completed";
+          return (
+            <Link
+              key={flight.id}
+              href={`/flights/${flight.id}`}
+              className="rounded-lg border border-slate-700/50 bg-slate-900/60 p-3 hover:border-slate-600/70 hover:bg-slate-800/50 transition-colors active:scale-[0.99]"
+            >
+              {/* Top row: badge + flight + status */}
+              <div className="flex items-center gap-2.5">
+                <AirlineBadge code={flight.airlineCode} size="sm" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-mono font-bold text-slate-100">{flight.flightNumber}</p>
+                    <span className="font-mono text-xs text-slate-500">{flight.origin}→{flight.destination}</span>
+                  </div>
+                  <p className="text-[10px] text-slate-600 leading-tight">{flight.aircraftType} · Gate {flight.gate}</p>
+                </div>
+                <span className={`shrink-0 rounded border px-2 py-0.5 text-[10px] font-bold tracking-wide ${getFlightStatusBg(flight.status as FlightStatus)}`}>
+                  {getStatusLabel(flight.status)}
+                </span>
+              </div>
+
+              {/* Bottom row: ATA · STD · time · section dots */}
+              <div className="mt-2.5 flex items-center gap-3 border-t border-slate-700/30 pt-2">
+                <div className="flex gap-3 flex-1 min-w-0">
+                  {flight.ata && (
+                    <div>
+                      <p className="text-[9px] text-slate-600 uppercase tracking-widest">ATA</p>
+                      <p className="font-mono text-xs text-slate-300">{formatTime(flight.ata)}</p>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-[9px] text-slate-600 uppercase tracking-widest">STD</p>
+                    <p className="font-mono text-xs text-slate-300">{formatTime(flight.std)}</p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] text-slate-600 uppercase tracking-widest">{isCompleted ? "ATD" : "To STD"}</p>
+                    {isCompleted ? (
+                      <p className="font-mono text-xs text-slate-500">{flight.atd ? formatTime(flight.atd) : "—"}</p>
+                    ) : (
+                      <p className={`font-mono text-xs font-bold tabular-nums ${timeToStd < 0 ? "text-red-400" : timeToStd < 20 ? "text-amber-400" : "text-slate-300"}`}>
+                        {timeToStd < 0 ? `${Math.abs(timeToStd)}m late` : `${timeToStd}m`}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Section dots */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {SECTIONS.map(({ type, short }) => {
+                    const section  = flight.sections.find((s) => s.type === type);
+                    const dotColor = SECTION_DOT[section?.status ?? "not_started"] ?? "bg-slate-700";
+                    return (
+                      <div key={type} className="flex flex-col items-center gap-0.5" title={`${short}: ${getStatusLabel(section?.status ?? "not_started")}`}>
+                        <div className={`h-2 w-2 rounded-full ${dotColor}`} />
+                        <span className="text-[8px] text-slate-700">{short}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Alert indicator */}
+                {flight.alertCount > 0 && (
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <AlertTriangle className={`h-3.5 w-3.5 ${flight.status === "critical" ? "text-red-400" : "text-amber-400"}`} />
+                    <span className={`text-[10px] font-bold ${flight.status === "critical" ? "text-red-400" : "text-amber-400"}`}>
+                      {flight.alertCount}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Blocker notice */}
+              {flight.currentBlocker && !isCompleted && (
+                <p className="mt-1.5 text-[10px] text-amber-400/90 leading-tight border-t border-amber-500/10 pt-1.5">
+                  ⚠ {flight.currentBlocker}
+                </p>
+              )}
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* ── Desktop flight table (≥ md) ──────────────────────────────── */}
+      <div className="hidden md:block rounded-lg border border-slate-700/50 bg-slate-900/60 overflow-x-auto scrollbar-thin">
         <table className="w-full min-w-[1020px] text-sm">
           <thead>
             <tr className="border-b border-slate-700/50">

@@ -78,19 +78,22 @@ export default async function SectionPage({ params }: Props) {
 
       {/* Tasks table */}
       <div className="rounded-lg border border-slate-700/50 bg-slate-900/60 overflow-x-auto scrollbar-thin">
-        <table className="w-full min-w-[860px] text-sm">
+        <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-slate-700/50">
               <th className="tc-table-header px-3 py-3 text-center w-8">#</th>
               <th className="tc-table-header px-4 py-3 text-left">Task</th>
-              <th className="tc-table-header px-3 py-3 text-left">Planned Start</th>
-              <th className="tc-table-header px-3 py-3 text-left">Planned End</th>
-              <th className="tc-table-header px-3 py-3 text-left">Actual Start</th>
-              <th className="tc-table-header px-3 py-3 text-left">Actual End</th>
-              <th className="tc-table-header px-3 py-3 text-left">Responsible</th>
+              {/* Time columns — hidden on mobile */}
+              <th className="tc-table-header px-3 py-3 text-left hidden sm:table-cell">Plan Start</th>
+              <th className="tc-table-header px-3 py-3 text-left hidden sm:table-cell">Plan End</th>
+              <th className="tc-table-header px-3 py-3 text-left hidden lg:table-cell">Actual Start</th>
+              <th className="tc-table-header px-3 py-3 text-left hidden lg:table-cell">Actual End</th>
+              {/* Responsible — hidden on mobile */}
+              <th className="tc-table-header px-3 py-3 text-left hidden sm:table-cell">Responsible</th>
               <th className="tc-table-header px-3 py-3 text-left">Status</th>
               <th className="tc-table-header px-3 py-3 text-left">Delay</th>
-              <th className="tc-table-header px-3 py-3 text-left">Notes</th>
+              {/* Notes — hidden on mobile */}
+              <th className="tc-table-header px-3 py-3 text-left hidden md:table-cell">Notes</th>
             </tr>
           </thead>
           <tbody>
@@ -111,38 +114,35 @@ export default async function SectionPage({ params }: Props) {
                   >
                     {task.name}
                   </Link>
-                  {task.dependencies && task.dependencies.length > 0 && (
-                    <p className="text-[10px] text-slate-600 mt-0.5">
-                      Deps: {task.dependencies.length}
-                    </p>
-                  )}
+                  {/* Show responsible inline on mobile only */}
+                  <p className="text-[10px] text-slate-500 mt-0.5 sm:hidden">{task.responsible}</p>
                 </td>
-                {/* Planned start */}
-                <td className="px-3 py-3 font-mono text-xs text-slate-400">
+                {/* Planned start — hidden mobile */}
+                <td className="px-3 py-3 font-mono text-xs text-slate-400 hidden sm:table-cell">
                   {formatTime(task.plannedStart)}
                 </td>
-                {/* Planned end */}
-                <td className="px-3 py-3 font-mono text-xs text-slate-400">
+                {/* Planned end — hidden mobile */}
+                <td className="px-3 py-3 font-mono text-xs text-slate-400 hidden sm:table-cell">
                   {formatTime(task.plannedEnd)}
                 </td>
-                {/* Actual start */}
-                <td className="px-3 py-3">
+                {/* Actual start — hidden below lg */}
+                <td className="px-3 py-3 hidden lg:table-cell">
                   {task.actualStart ? (
                     <span className="font-mono text-xs text-slate-300">{formatTime(task.actualStart)}</span>
                   ) : (
                     <span className="text-slate-600">—</span>
                   )}
                 </td>
-                {/* Actual end */}
-                <td className="px-3 py-3">
+                {/* Actual end — hidden below lg */}
+                <td className="px-3 py-3 hidden lg:table-cell">
                   {task.actualEnd ? (
                     <span className="font-mono text-xs text-slate-300">{formatTime(task.actualEnd)}</span>
                   ) : (
                     <span className="text-slate-600">—</span>
                   )}
                 </td>
-                {/* Responsible */}
-                <td className="px-3 py-3 text-xs text-slate-400">
+                {/* Responsible — hidden mobile */}
+                <td className="px-3 py-3 text-xs text-slate-400 hidden sm:table-cell">
                   {task.responsible}
                 </td>
                 {/* Status */}
@@ -152,15 +152,15 @@ export default async function SectionPage({ params }: Props) {
                 {/* Delay */}
                 <td className="px-3 py-3">
                   {task.delayMinutes > 0 ? (
-                    <span className="font-mono text-xs font-semibold text-orange-400">
+                    <span className="font-mono text-xs font-semibold text-orange-400 tabular-nums">
                       +{task.delayMinutes}m
                     </span>
                   ) : (
                     <span className="text-slate-600 text-xs">—</span>
                   )}
                 </td>
-                {/* Notes */}
-                <td className="px-3 py-3 max-w-[200px]">
+                {/* Notes — hidden mobile */}
+                <td className="px-3 py-3 max-w-[200px] hidden md:table-cell">
                   {task.notes ? (
                     <Link
                       href={`/flights/${id}/tasks/${task.id}`}

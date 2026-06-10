@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/Sidebar";
+import { MobileNav } from "@/components/MobileNav";
+import { MobileHeader } from "@/components/MobileHeader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,6 +20,12 @@ export const metadata: Metadata = {
   description: "Live turnaround and ground stay control system for airline station operations.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,9 +38,16 @@ export default function RootLayout({
     >
       <body className="flex h-full overflow-hidden bg-slate-950 text-slate-100">
         <Sidebar />
-        <main className="flex flex-1 flex-col overflow-y-auto scrollbar-thin">
-          {children}
-        </main>
+        <div className="flex flex-1 flex-col min-h-0">
+          {/* Mobile-only sticky top bar */}
+          <MobileHeader />
+          {/* Main scrollable content */}
+          <main className="flex flex-1 flex-col overflow-y-auto scrollbar-thin pb-16 md:pb-0">
+            {children}
+          </main>
+        </div>
+        {/* Mobile bottom nav */}
+        <MobileNav />
       </body>
     </html>
   );
